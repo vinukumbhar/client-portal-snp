@@ -35,7 +35,7 @@ const SIDEBAR_API = process.env.REACT_APP_CLIENT_SIDEBAR_URL
     useEffect(() => {
         const fetchSidebarData = async () => {
             try {
-                const response = await axios.get(`${SIDEBAR_API}/api/`);
+                const response = await axios.get(`${SIDEBAR_API}/clientsidebar/`);
                 setSidebarItems(response.data);
                 console.log(response.data);
             } catch (error) {

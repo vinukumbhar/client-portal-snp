@@ -109,9 +109,10 @@ const Home = () => {
 
   const [organizerTemplatesData, setOrganizerTemplatesData] = useState([]);
   const ORGANIZER_API = process.env.REACT_APP_ORGANIZER_TEMP_URL;
+  // const [isActiveTrue, setIsActiveTrue] = useState(true);
   const fetchOrganizerTemplates = async (accountId) => {
     try {
-      const url = `${ORGANIZER_API}/workflow/orgaccwise/organizeraccountwise/organizerbyaccount/${accountId}`;
+      const url = `${ORGANIZER_API}/workflow/orgaccwise/organizeraccountwise/organizerbyaccount/${accountId}/${isActiveTrue}`;
 
       const response = await fetch(url);
       if (!response.ok) {
@@ -147,7 +148,7 @@ const Home = () => {
   };
 
   const handleOragnizer = (organizerId) => {
-    navigate('/organizers');
+    navigate('/organizers/active');
   };
 
   //for billing
@@ -291,63 +292,10 @@ const Home = () => {
             <Box ml={2}>
               <Box fontWeight="bold">Waiting for action</Box>
             </Box>
-            {/* Documents */}
-            <Box m={2}>
-              <Box mt={2} fontWeight="bold" display="flex" justifyContent="space-between">
-                <StyledBadge badgeContent={1} color="success">
-                  <Typography variant="body1">Documents</Typography>
-                </StyledBadge>
-              </Box>
-              <Box mt={3}>
-                {HomeData.slice(0, 1).map((card, index) => (
-                  <Paper
-                    key={index}
-                    sx={{
-                      position: 'relative',
-                      '&:hover .signText': {
-                        opacity: 1, 
-                      },
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '14px',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                        mb: 2,
-                      }}
-                    >
-                      <Box sx={{ color: 'rgb(255, 142, 0)', mr: 2 }}>{card.icon}</Box>
-                      <Box>
-                        <Typography fontWeight="bold">{card.title}</Typography>
-                        <Typography variant="body2">{card.description}</Typography>
-                      </Box>
-                    </Box>
-                    <Box
-                      className="signText"
-                      sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '95%',
-                        transform: 'translate(-50%, -50%)',
-                        opacity: 0,
-                        transition: 'opacity 0.3s ease',
-                        cursor: 'pointer',
-                        fontSize: '15px',
-                        color: '#1976d3',
-                      }}
-                    >
-                      Sign
-                    </Box>
-                  </Paper>
-                ))}
-              </Box>
-            </Box>
+            
 
             {/* organizer */}
-            <Box m={2}>
+            {/* <Box m={2}>
               <Box mt={2} fontWeight="bold" display="flex" justifyContent="space-between">
                 <StyledBadge badgeContent={organizerTemplatesData.length} color="success">
                   <Typography variant="body1">Organizers</Typography>
@@ -403,8 +351,115 @@ const Home = () => {
                   </Paper>
                 ))}
               </Box>
-            </Box>
+            </Box> */}
+<Box m={2}>
+              <Box mt={2} fontWeight="bold" display="flex" justifyContent="space-between">
+                <StyledBadge badgeContent={organizerTemplatesData.filter((organizerAccountWise) => !organizerAccountWise.issubmited).length} color="success">
+                  <Typography variant="body1">Organizers</Typography>
+                </StyledBadge>
 
+                <Typography onClick={handleOragnizer} color="#1976d3" sx={{ cursor: "pointer" }} variant="body1">See all {organizerTemplatesData.filter((organizerAccountWise) => !organizerAccountWise.issubmited).length}</Typography>
+              </Box>
+
+              {/* <Box mt={3}>
+                {organizerTemplatesData.slice(0, 4).map((organizerAccountWise) => (
+                  <Paper key={organizerAccountWise._id}>
+                    <Box
+                      onClick={() => handleEditOragnizer(organizerAccountWise._id)}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: '14px',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        mb: 2,
+                        position: 'relative',
+                        '&:hover .complete-text': {
+                          opacity: 1,
+                        },
+                      }}
+                    >
+                      <Box sx={{ color: 'rgb(255, 142, 0)', ml: 2 }}>
+                        <EventNoteIcon />
+                      </Box>
+                      <Box sx={{ marginLeft: 2, cursor: 'pointer' }}>
+                        <Typography fontWeight="bold">Complete Organizer</Typography>
+                        <Typography sx={{ color: '#697991' }}>
+                          {organizerAccountWise.organizertemplateid?.organizerName || 'Organizer Name'}
+                        </Typography>
+                      </Box>
+                      <Box
+                        className="complete-text"
+                        sx={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '95%',
+                          transform: 'translate(-50%, -50%)',
+                          opacity: 0,
+                          transition: 'opacity 0.3s ease',
+                          cursor: 'pointer',
+                          fontSize: '15px',
+                          color: '#1976d3',
+                        }}
+                      >
+                        Complete
+                      </Box>
+                    </Box>
+                  </Paper>
+                ))}
+              </Box> */}
+
+<Box mt={3}>
+    {organizerTemplatesData
+        .filter((organizerAccountWise) => !organizerAccountWise.issubmited) // Filter for issubmited: false
+        .slice(0, 4) // Limit to the first 4 items
+        .map((organizerAccountWise) => (
+            <Paper key={organizerAccountWise._id}>
+                <Box
+                    onClick={() => handleEditOragnizer(organizerAccountWise._id)}
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: '14px',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        mb: 2,
+                        position: 'relative',
+                        '&:hover .complete-text': {
+                            opacity: 1,
+                        },
+                    }}
+                >
+                    <Box sx={{ color: 'rgb(255, 142, 0)', ml: 2 }}>
+                        <EventNoteIcon />
+                    </Box>
+                    <Box sx={{ marginLeft: 2, cursor: 'pointer' }}>
+                        <Typography fontWeight="bold">Complete Organizer</Typography>
+                        <Typography sx={{ color: '#697991' }}>
+                            {organizerAccountWise.organizertemplateid?.organizerName || 'Organizer Name'}
+                        </Typography>
+                    </Box>
+                    <Box
+                        className="complete-text"
+                        sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '95%',
+                            transform: 'translate(-50%, -50%)',
+                            opacity: 0,
+                            transition: 'opacity 0.3s ease',
+                            cursor: 'pointer',
+                            fontSize: '15px',
+                            color: '#1976d3',
+                        }}
+                    >
+                        Complete
+                    </Box>
+                </Box>
+            </Paper>
+        ))}
+</Box>
+            </Box>
             <Dialog open={previewDialogOpen} onClose={handleClosePreview} fullScreen>
               <DialogContent>
                 <Box>

@@ -30,75 +30,8 @@ import { AiFillFileUnknown } from "react-icons/ai";
 import CloseIcon from "@mui/icons-material/Close";
 
 const Documents = () => {
-    const [folderData, setFolderData] = useState([]);
-    const [expandedFolders, setExpandedFolders] = useState({});
-    const [selectedFolder, setSelectedFolder] = useState(null);
-console.log(selectedFolder)
-    useEffect(() => {
-        fetchAllFolders();
-    }, []);
-    const fetchAllFolders = async () => {
-        try {
-            const response = await fetch(
-                'http://127.0.0.1:8002/clientdocs/folders/674aef818b91e860647a4343'
-            );
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
 
-            const result = await response.json();
-            console.log(result)
-            // Filter out the "Private" folder
-            const filteredContents = result.contents.filter(
-                (folder) => folder.name !== "Private"
-            );
-
-            setFolderData(filteredContents);// Set the fetched data
-        }
-        catch (error) {
-            console.error("Error fetching all folders:", error.response.data.error);
-        }
-    };
-    const toggleFolder = (folderName) => {
-        setExpandedFolders((prevState) => ({
-            ...prevState,
-            [folderName]: !prevState[folderName],
-        }));
-    };
-    const renderContents = (contents) => {
-        return (
-            <ul style={{ listStyleType: "none", paddingLeft: "20px" }}>
-                {contents.map((item) => (
-                    <li key={item.name}>
-                        {item.type === "folder" ? (
-                            <div>
-                                <IconButton
-                                    onClick={() => toggleFolder(item.name)}
-                                    style={{ verticalAlign: "middle" }}
-                                >
-                                    <FaFolder />
-                                </IconButton>
-                                <strong  onClick={() => setSelectedFolder(item)}  style={{
-                                    cursor: "pointer",
-                                    
-                                }}>{item.name}</strong>
-                                {expandedFolders[item.name] && item.contents.length > 0 && (
-                                    <div style={{ marginLeft: "20px" }}>
-                                        {renderContents(item.contents)}
-                                    </div>
-                                )}
-                            </div>
-                        ) : (
-                            <div style={{ display: "flex", alignItems: "center" }}>
-                                {getFileIcon(item.name)}
-                                <strong>{item.name}</strong>
-                            </div>
-                        )}
-                    </li>
-                ))}
-            </ul>
-        );
-    };
+   
     const StyledBadge = styled(Badge)(({ theme }) => ({
         '& .MuiBadge-badge': {
             right: -25,
@@ -107,20 +40,7 @@ console.log(selectedFolder)
             padding: '0 4px',
         },
     }));
-    const getFileIcon = (fileName) => {
-        const extension = fileName.split(".").pop().toLowerCase();
-        if (extension === "pdf") {
-            return <FaRegFilePdf style={{ color: "red" }} />;
-        } else if (extension === "jpg" || extension === "jpeg") {
-            return <FaRegImage />;
-        } else if (extension === "xlsx" || extension === "xls") {
-            return <BsFiletypeXlsx style={{ color: "green" }} />;
-        } else if (extension === "txt") {
-            return <PiMicrosoftWordLogoFill style={{ color: "blue" }} />;
-        } else {
-            return <AiFillFileUnknown style={{ color: "grey" }} />;
-        }
-    };
+ 
 
 
     const theme = useTheme();
@@ -267,11 +187,7 @@ console.log(selectedFolder)
                         <CloseIcon />
                     </IconButton>
                 </Box>
-                <Box>
-                    {folderData.length > 0 && (
-                        renderContents(folderData)
-                    )}
-                </Box>
+               
                 <Box mt={5} display="flex" alignItems="center" gap={2} p={3}>
 
                     <Button variant="contained" >

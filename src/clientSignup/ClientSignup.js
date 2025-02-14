@@ -531,7 +531,7 @@ const ClientSignUp = () => {
             body: raw,
             redirect: "follow",
         };
-        const urlusersavedmail = `${LOGIN_API}/clientsavedemail/`;
+        const urlusersavedmail = `${LOGIN_API}/newclientsavedemail/`;
         fetch(urlusersavedmail, requestOptions)
             .then((response) => response.json())
 
@@ -770,32 +770,6 @@ const ClientSignUp = () => {
 
                                 </Box>
 
-                                {/* <Box display={'flex'} flexDirection={'column'}>
-                                    <FormControlLabel
-                                        control={<Checkbox />}
-                                        label="Individual Tax Returns(1040)"
-                                    />
-                                    <FormControlLabel
-                                        control={<Checkbox />}
-                                        label="Business Tax Returns "
-                                    />
-
-                                    <FormControlLabel
-                                        control={<Checkbox />}
-                                        label="Student NR(Non-Resident) Tax Returns "
-                                    />
-
-                                    <FormControlLabel
-                                        control={<Checkbox />}
-                                        label="ITIN Application "
-                                    />
-
-                                    <FormControlLabel
-                                        control={<Checkbox />}
-                                        label="Payroll Service "
-                                    />
-
-                                </Box> */}
 
                                 <Box onClick={nextStep} mt={3} >
                                     <Button onClick={submitUserinfo} sx={{ borderRadius: '10px', width: '30%', p: 1 }} variant="contained" color="primary" >

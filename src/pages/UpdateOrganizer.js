@@ -146,6 +146,17 @@ const UpdateOrganizer = ({ OrganizerData, onClose = () => {} }) => {
   const handleOrganizerFormClose = () => {
     navigate(`/organizers/active`);
   };
+  const statusupadate=(id)=>{
+    const requestOptions = {
+        method: "PATCH",
+        redirect: "follow"
+      };
+      
+      fetch(`${ORGANIZER_API}/workflow/orgaccwise/organizeraccountwise/organizeraccountwisestatus/${id}/true`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
+    }
   const createOrganizerOfAccount = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -189,6 +200,7 @@ const UpdateOrganizer = ({ OrganizerData, onClose = () => {} }) => {
     fetch(url, requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        statusupadate(_id)
         console.log(result);
         toast.success("Organizer AccountWise Updated successfully");
         // onClose();

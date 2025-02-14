@@ -50,25 +50,70 @@ const Active = () => {
 
 
   const [organizerTemplatesData, setOrganizerTemplatesData] = useState([]);
-  
+  const [issubmitted,setIssubmitted]=useState();
+  const [isActiveTrue, setIsActiveTrue] = useState(true);
   const fetchOrganizerTemplates = async (accountId) => {
     try {
-      const url = `${ORGANIZER_API}/workflow/orgaccwise/organizeraccountwise/organizerbyaccount/${accountId}`;
+      const url = `${ORGANIZER_API}/workflow/orgaccwise/organizeraccountwise/organizerbyaccount/${accountId}/${isActiveTrue}`;
 
       const response = await fetch(url);
+      console.log("url",url)
       if (!response.ok) {
         throw new Error("Failed to fetch organizerTemplatesData");
       }
       const data = await response.json();
       console.log(data);
-      setOrganizerTemplatesData(data.organizerAccountWise);
-      console.log(data.organizerAccountWise[0].organizertemplateid.organizerName)
-      console.log(data.organizerAccountWise[0].issealed)
-      console.log(data.organizerAccountWise[0]._id)
+          // Assuming you want to handle multiple organizerAccountWise items
+          if (data.organizerAccountWise && data.organizerAccountWise.length > 0) {
+            setOrganizerTemplatesData(data.organizerAccountWise);
+      
+            // Log all issubmited statuses
+            data.organizerAccountWise.forEach((organizer) => {
+              console.log("status:", organizer.issubmited);
+            });
+      
+            // Optionally, set issubmitted for the first organizer or aggregate
+            setIssubmitted('status',data.organizerAccountWise[0].issubmited);
+          } else {
+            console.warn("No organizerAccountWise data available");
+          }
+     
     } catch (error) {
       console.error("Error fetching organizerTemplatesData:", error);
     }
   };
+//   const fetchOrganizerTemplates = async (accountId) => {
+//     try {
+
+//       const url = `${ORGANIZER_API}/workflow/orgaccwise/organizeraccountwise/organizerbyaccount/${accountId}/${isActiveTrue}`;
+//       console.log(url)
+//       const response = await fetch(url);
+//       if (!response.ok) {
+//         throw new Error("Failed to fetch organizerTemplatesData");
+//       }
+  
+//       const data = await response.json();
+//       console.log("tempdata:", data);
+  
+      // // Assuming you want to handle multiple organizerAccountWise items
+      // if (data.organizerAccountWise && data.organizerAccountWise.length > 0) {
+      //   setOrganizerTemplatesData(data.organizerAccountWise);
+  
+      //   // Log all issubmited statuses
+      //   data.organizerAccountWise.forEach((organizer) => {
+      //     console.log("status:", organizer.issubmited);
+      //   });
+  
+      //   // Optionally, set issubmitted for the first organizer or aggregate
+      //   setIssubmitted('status',data.organizerAccountWise[0].issubmited);
+      // } else {
+      //   console.warn("No organizerAccountWise data available");
+      // }
+//     } catch (error) {
+//       console.error("Error fetching organizerTemplatesData:", error);
+//     }
+//   };
+  
   useEffect(() => {
     fetchOrganizerTemplates(accountId);
   }, [accountId]);
@@ -163,48 +208,8 @@ const printOrganizerData = (id) => {
 
   return (
     <Box>
-      <Grid container justifyContent="center" alignItems="center" sx={{ mt: 2 }} className='cbilling-cards'>
-        <Grid item xs={12} sm={6} md={5} display="flex" justifyContent="center">
-          <Box sx={{ border: '2px dotted #94a3b8', width: '60%', minHeight: '148px', maxHeight: '148px' }} className='card1'>
-
-            <Box sx={{ display: 'flex', gap: '10px', mt: 2, alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-              <Box sx={{ display: 'flex', gap: '10px', mt: 2, alignItems: 'center', justifyContent: 'center' }}>
-                <Box sx={{ position: 'relative', display: 'inline-block' }}>
-                  <PaymentsRoundedIcon sx={{ fontSize: '70px' }} />
-                  <MonetizationOnRoundedIcon sx={{ position: 'absolute', top: 0, left: 0, fontSize: '24px', backgroundColor: '#fff', borderRadius: '50%', color: '#24c875' }} />
-                </Box>
-                <Typography sx={{ color: '#697991' }} variant="h7">outstanding balance</Typography>
-              </Box>
-
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: "#1976d3" }}>
-              <Typography sx={{ fontSize: '30px' }} variant='h6'>$0.00</Typography>
-            </Box>
-
-
-          </Box>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={5} display="flex" justifyContent="center">
-          <Box sx={{ border: '2px dotted #94a3b8', width: '60%', minHeight: '148px', maxHeight: '148px' }} className='card1'>
-
-            <Box sx={{ display: 'flex', gap: '10px', mt: 2, alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-              <Box sx={{ display: 'flex', gap: '10px', mt: 2, alignItems: 'center', justifyContent: 'center' }}>
-                <Box sx={{ position: 'relative', display: 'inline-block' }}>
-                  <PaymentsRoundedIcon sx={{ fontSize: '70px' }} />
-                  <StarsRoundedIcon sx={{ position: 'absolute', top: 0, left: 0, fontSize: '24px', backgroundColor: '#fff', borderRadius: '50%', color: '#24c875' }} />
-                </Box>
-                <Typography sx={{ color: '#697991' }} variant="h7">Credits Available</Typography>
-              </Box>
-
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: "#24c875" }}>
-              <Typography sx={{ fontSize: '30px' }} variant='h6'>$0.00</Typography>
-            </Box>
-          </Box>
-        </Grid>
-      </Grid>
-      <Divider sx={{ mt: 2 }} />
+      
+      
       <Box>
 
 
@@ -287,9 +292,9 @@ const printOrganizerData = (id) => {
           </TableBody>
         </Table>
       </Paper> */}
-
+{/* sx={{ minWidth: 650,height:'40vh ',overflowY:'auto'}} */}
       <Paper>
-        <Table sx={{ minWidth: 650,height:'40vh ',overflowY:'auto'}} aria-label="simple table">
+        <Table  aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell>
@@ -326,10 +331,19 @@ const printOrganizerData = (id) => {
                   {new Date(row.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                 </TableCell>
                 <TableCell>{row.issealed ? <Chip label="Sealed" color="primary" /> : null}</TableCell>
-                <TableCell>
+               
             {/* Hardcoded "Completed" status */}
-            <Typography sx={{ fontWeight: "bold", color: "green" }}>Completed</Typography>
-          </TableCell>
+            <TableCell>
+                  <Chip
+                    label={row.issubmited ? "Completed" : "Pending"}
+                    color={row.issubmited ? "success" : "default"}
+                    sx={{
+                      backgroundColor: row.issubmited ? "green" : "grey",
+                      color: "white",
+                    }}
+                  />
+                </TableCell>
+         
 
           <TableCell>
             <PrintIcon onClick={() => printOrganizerData(row._id)} sx={{color:'#1976d3',cursor:'pointer'}}/>
