@@ -94,7 +94,7 @@ import { BsFiletypePdf } from "react-icons/bs";
 import { BsFiletypeTxt } from "react-icons/bs";
 import { BsFiletypeJpg } from "react-icons/bs";
 import { BsFiletypePng } from "react-icons/bs";
-import { FaRegFolderClosed } from "react-icons/fa6";
+
 import { Collapse, ListItemIcon,  } from "@mui/material";
 import { Folder, FolderOpen, InsertDriveFile } from "@mui/icons-material";
 const Documents = () => {
@@ -102,7 +102,7 @@ const Documents = () => {
   const [loginuserid, setLoginUserId] = useState("");
   const [accountId, setAccountId] = useState(null);
   const [accountData, setAccountData] = useState(null);
-  const [documents, setDocuments] = useState([]);
+  
   const [folderdata, setFolderData] = useState(null);
   useEffect(() => {
     if (logindata?.user?.id) {
@@ -154,7 +154,12 @@ const Documents = () => {
       }
       const result = await response.json();
       console.log(result)
-      setFolderData(result);
+      // setFolderData(result);
+       // Filter out the "Private" folder
+    const filteredContents = result.contents.filter(folder => folder.name !== "Private");
+
+    // Update the folder data state
+    setFolderData({ ...result, contents: filteredContents });
     } catch (error) {
       console.error("Error fetching documents:", error);
     }
@@ -202,7 +207,7 @@ const FolderContents = ({ contents }) => {
   return (
     <List component="nav" sx={{ paddingLeft: 2 }}>
       {contents.map((item, index) => (
-        <ListItem key={index} sx={{ paddingY: 0.5 }}>
+        <ListItem key={index} sx={{ paddingY: 0.5 ,cursor:"pointer"}} >
           {item.type === "folder" ? (
             <CollapsibleFolder name={item.name}>
               <FolderContents contents={item.contents} />
@@ -239,13 +244,7 @@ const CollapsibleFolder = ({ name, children }) => {
 };
   return (
     <Box>
-      <Typography>Show folders and file</Typography>
-      {accountId ? (
-        <Typography>Account ID: {accountId}</Typography>
-      ) : (
-        <Typography>Loading account details...</Typography>
-      )}
-
+   
 {folderdata && folderdata.contents && <FolderContents contents={folderdata.contents} />}
     </Box>
   );
