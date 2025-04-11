@@ -98,6 +98,8 @@ import { BsFiletypePng } from "react-icons/bs";
 import { Collapse, ListItemIcon,  } from "@mui/material";
 import { Folder, FolderOpen, InsertDriveFile } from "@mui/icons-material";
 const Documents = () => {
+  const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
+  const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
   const { logindata } = useContext(LoginContext);
   const [loginuserid, setLoginUserId] = useState("");
   const [accountId, setAccountId] = useState(null);
@@ -124,7 +126,7 @@ const Documents = () => {
 
   // Fetch account details
   const fetchAccountDetails = async (userId) => {
-    const url = `http://127.0.0.1/accounts/accountdetails/accountdetailslist/listbyuserid/${userId}`;
+    const url = `${ACCOUNT_API}/accounts/accountdetails/accountdetailslist/listbyuserid/${userId}`;
 
     try {
       const response = await fetch(url, { method: "GET", redirect: "follow" });
@@ -145,7 +147,7 @@ const Documents = () => {
 
   // Fetch documents using account ID
   const fetchDocuments = async (accountId) => {
-    const url = `http://127.0.0.1/clientdocs/folders/${accountId}`;
+    const url = `${DOCS_MANAGMENTS}/clientdocs/folders/${accountId}`;
 
     try {
       const response = await fetch(url, { method: "GET", redirect: "follow" });

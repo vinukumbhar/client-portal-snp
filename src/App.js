@@ -139,6 +139,7 @@ import UpdateOrganizer from './pages/UpdateOrganizer';
 import Updatechat from './pages/UpdateChat'
 import UpdateProposals from './pages/UpdateProposals';
 import UpdatePassword from "./clientSignup/UpdatePassword"
+import Test from "./pages/test"
 const App = () => {
   return (
     <BrowserRouter>
@@ -152,6 +153,7 @@ const App = () => {
         
         <Route path='/' element={<SidebarComponent />}>
           <Route path='/home' element={<Home/>} />
+          <Route path='/testpayment' element={<Test/>} />
           <Route path='/document' element={<Documents />}>
             <Route path='recent' element={<Recent />} />
             <Route path='folders' element={<Folder />} />

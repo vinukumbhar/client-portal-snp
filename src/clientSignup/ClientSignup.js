@@ -105,7 +105,7 @@ const ClientSignUp = () => {
                             email: inpval.email,
                         });
                         // Fetch URL with environment variable
-                        const url = `${LOGIN_API}/clientrequest-otp/`;
+                        const url = `${LOGIN_API}/clientsotp/clientrequest-otp/`;
                         let config = {
                             method: "post",
                             maxBodyLength: Infinity,

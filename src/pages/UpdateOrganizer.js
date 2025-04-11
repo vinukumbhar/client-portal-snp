@@ -6,7 +6,7 @@ import { useParams,useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import parse from "html-react-parser";
 const UpdateOrganizer = ({ OrganizerData, onClose = () => {} }) => {
 
   const {_id } = useParams();
@@ -287,6 +287,10 @@ const UpdateOrganizer = ({ OrganizerData, onClose = () => {} }) => {
     }
     return true;
   };
+  const stripHtml = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
+  };
   return (
     <Container>
 
@@ -311,7 +315,7 @@ const UpdateOrganizer = ({ OrganizerData, onClose = () => {} }) => {
                       (question) =>
                         shouldShowElement(question) && (
                           <div key={question.id} className="question">
-                            <Typography style={{ margin: "13px 0" }}>{question.text}</Typography>
+                            <Typography style={{ margin: "13px 0" ,}}>  {parse(question.text)}</Typography>
                             {question.type === "Checkboxes" && (
                               <div className="checkbox-container">
                                 {question.options.map((option) => (

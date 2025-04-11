@@ -49,7 +49,7 @@ function ForgotPassword() {
 
       const url = `${SEVER_PORT}/resetpassword`;
 
-      const urlnew =`${LOGIN_API}/forgotpassword/`;
+      const urlnew =`${LOGIN_API}/resetpass/forgotpassword/`;
       const data = await fetch(urlnew, {
         method: "POST",
         headers: {
