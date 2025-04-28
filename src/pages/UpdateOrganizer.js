@@ -1,6 +1,6 @@
 
-import React, { useState, useEffect } from "react";
-
+import React, { useState, useEffect,useContext } from "react";
+import { LoginContext } from '../Contextprovider/Context';
 import { Container, Box, Typography,TextField, FormControlLabel, Checkbox, Radio, Button, Grid, Paper, } from "@mui/material"; // Make sure you have MUI installed
 import { useParams,useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -10,9 +10,35 @@ import parse from "html-react-parser";
 const UpdateOrganizer = ({ OrganizerData, onClose = () => {} }) => {
 
   const {_id } = useParams();
-  console.log(_id)
+  // console.log(_id)
+ const [accountId, setAccountId] = useState([])
+ const [accountName,setAccountName]=useState("")
+  const { logindata } = useContext(LoginContext)
+  const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
+  const fetchAccountId = async () => {
+      const requestOptions = {
+          method: "GET",
+          redirect: "follow"
+      };
 
+      fetch(`${ACCOUNT_API}/accounts/accountdetails/accountdetailslist/listbyuserid/${logindata.user.id}`, requestOptions)
+          .then((response) => response.json()
+          )
+          .then((result) => {
+              console.log(result)
+              setAccountId(result.accounts[0]._id)
+              setAccountName(result.accounts[0].accountName)
+              console.log(result.accounts[0]._id)
+          })
+          .catch((error) => console.error(error));
+  };
 
+  console.log(accountId)
+
+  useEffect(() => {
+      fetchAccountId()
+
+  }, []);
 
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [selectedOrganizerTemplate, setSelectedOrganizerTemplate] = useState(null);
@@ -20,7 +46,7 @@ const UpdateOrganizer = ({ OrganizerData, onClose = () => {} }) => {
   const [organizerName, setOrganizerName] = useState("");
   const [reminder, setReminder] = useState(false);
   const [organizerTemp, setOrganizerTemp] = useState(null); // Set initial state to null
-  const [fileInputs, setFileInputs] = useState({});
+  const [fileInputs, setFileInputs] = useState("");
   const [sections, setSections] = useState([]);
 
   useEffect(() => {
@@ -139,6 +165,7 @@ const UpdateOrganizer = ({ OrganizerData, onClose = () => {} }) => {
       ...prevState,
       [questionId]: files[0],
     }));
+    console.log("uplaoded files", files)
   };
 
   const navigate = useNavigate();
@@ -157,63 +184,152 @@ const UpdateOrganizer = ({ OrganizerData, onClose = () => {} }) => {
         .then((result) => console.log(result))
         .catch((error) => console.error(error));
     }
-  const createOrganizerOfAccount = () => {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
 
-    const raw = JSON.stringify({
-      accountid: selectedAccounts?.value,
-      organizertemplateid: selectedOrganizerTemplate?.value,
-      reminders: reminder,
-      jobid: ["661e495d11a097f731ccd6e8"],
-      sections:
-        organizerTemp?.sections?.map((section) => ({
-          name: section?.text || "",
-          id: section?.id?.toString() || "",
-          text: section?.text || "",
-          formElements:
-            section?.formElements?.map((question) => ({
-              type: question?.type || "",
-              id: question?.id || "",
-              sectionid: question?.sectionid || "",
-              options:
-                question?.options?.map((option) => ({
-                  id: option?.id || "",
-                  text: option?.text || "",
-                  selected: option?.selected || false,
-                })) || [],
-              text: question?.text || "",
-              textvalue: question?.textvalue || "",
-            })) || [],
-        })) || [],
-      active: true,
-    });
 
-    const requestOptions = {
-      method: "PATCH",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    console.log(raw);
-    const url = `${ORGANIZER_API}/workflow/orgaccwise/organizeraccountwise/${_id}`;
-    fetch(url, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        statusupadate(_id)
-        console.log(result);
-        toast.success("Organizer AccountWise Updated successfully");
-        // onClose();
-        handleOrganizerFormClose();
-      })
-      .catch((error) => console.error(error));
-  };
+  // const createOrganizerOfAccount = () => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Content-Type", "application/json");
+
+  //   const raw = JSON.stringify({
+  //     accountid: selectedAccounts?.value,
+  //     organizertemplateid: selectedOrganizerTemplate?.value,
+  //     reminders: reminder,
+  //     jobid: ["661e495d11a097f731ccd6e8"],
+  //     sections:
+  //       organizerTemp?.sections?.map((section) => ({
+  //         name: section?.text || "",
+  //         id: section?.id?.toString() || "",
+  //         text: section?.text || "",
+  //         formElements:
+  //           section?.formElements?.map((question) => ({
+  //             type: question?.type || "",
+  //             id: question?.id || "",
+  //             sectionid: question?.sectionid || "",
+  //             options:
+  //               question?.options?.map((option) => ({
+  //                 id: option?.id || "",
+  //                 text: option?.text || "",
+  //                 selected: option?.selected || false,
+  //               })) || [],
+  //             text: question?.text || "",
+  //             textvalue: question?.textvalue || "",
+  //           })) || [],
+  //       })) || [],
+  //     active: true,
+  //   });
+
+  //   const requestOptions = {
+  //     method: "PATCH",
+  //     headers: myHeaders,
+  //     body: raw,
+  //     redirect: "follow",
+  //   };
+  //   console.log(raw);
+  //   const url = `${ORGANIZER_API}/workflow/orgaccwise/organizeraccountwise/${_id}`;
+  //   fetch(url, requestOptions)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       statusupadate(_id)
+  //       console.log(result);
+  //       toast.success("Organizer AccountWise Updated successfully");
+  //       // onClose();
+  //       handleOrganizerFormClose();
+  //     })
+  //     .catch((error) => console.error(error));
+  // };
 
 
 
 
 
   //Sections
+  
+  
+  const createOrganizerOfAccount = async () => {
+    try {
+      // Step 1: Upload all files first if there are file inputs
+      const fileUploadPromises = [];
+  
+      organizerTemp?.sections?.forEach((section) => {
+        section?.formElements?.forEach((question) => {
+          if (question.type === "File Upload" && fileInputs[question.id]) {
+            const formData = new FormData();
+            formData.append("file", fileInputs);
+            formData.append("destinationPath", `uploads/AccountId/${accountId}/Client Uploaded Documents/unsealed`); // Example path
+            // formData.append("accountName", accountName); // assuming you have account name
+  
+            const uploadPromise = fetch(`${DOCS_MANAGMENTS}/uploadfiledocument`, {
+              method: "POST",
+              body: formData,
+            }).then(response => response.json());
+  
+            fileUploadPromises.push(uploadPromise);
+          }
+        });
+      });
+  
+      // Step 2: Wait for all file uploads to complete
+      await Promise.all(fileUploadPromises);
+      console.log("All files uploaded!");
+  
+      // Step 3: After files are uploaded, update the organizer as before
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+  
+      const raw = JSON.stringify({
+        accountid: selectedAccounts?.value,
+        organizertemplateid: selectedOrganizerTemplate?.value,
+        reminders: reminder,
+        jobid: ["661e495d11a097f731ccd6e8"],
+        sections:
+          organizerTemp?.sections?.map((section) => ({
+            name: section?.text || "",
+            id: section?.id?.toString() || "",
+            text: section?.text || "",
+            formElements:
+              section?.formElements?.map((question) => ({
+                type: question?.type || "",
+                id: question?.id || "",
+                sectionid: question?.sectionid || "",
+                options:
+                  question?.options?.map((option) => ({
+                    id: option?.id || "",
+                    text: option?.text || "",
+                    selected: option?.selected || false,
+                  })) || [],
+                text: question?.text || "",
+                textvalue: question?.textvalue || "",
+              })) || [],
+          })) || [],
+        active: true,
+      });
+  
+      const requestOptions = {
+        method: "PATCH",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+  
+      const url = `${ORGANIZER_API}/workflow/orgaccwise/organizeraccountwise/${_id}`;
+      const response = await fetch(url, requestOptions);
+      const result = await response.json();
+  
+      statusupadate(_id);
+      console.log(result);
+      toast.success("Organizer AccountWise Updated successfully");
+      handleOrganizerFormClose();
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong while uploading files or updating organizer!");
+    }
+  };
+  
+  
+  
+  
+  
   const [activeStep, setActiveStep] = useState(0);
   const [radioValues, setRadioValues] = useState({});
   const [checkboxValues, setCheckboxValues] = useState({});

@@ -159,7 +159,7 @@ const App = () => {
             <Route path='folders' element={<Folder />} />
             <Route path='trash' element={<Trash />} />
           </Route>
-          <Route path='/chats&tasks' element={<Chat />} />
+          <Route path='/chatstasks' element={<Chat />} />
           <Route path='/updatechat/:_id' element={<Updatechat/>}/>
           <Route path='/organizers/update/:_id' element={<UpdateOrganizer />} />
           <Route path='/organizers' element={<Organizer />}>

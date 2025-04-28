@@ -243,6 +243,7 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
 const Invoices = () => {
@@ -470,7 +471,7 @@ const Invoices = () => {
   const totalAmount = BillingInvoice.filter((invoice) =>
     selected.includes(invoice._id)
   ).reduce((sum, row) => sum + row.summary.total, 0).toFixed(2);
-  console.log(totalAmount)
+  // console.log(totalAmount)
   const handleConfirmPayment = async () => {
     let method;
   
@@ -520,13 +521,85 @@ const Invoices = () => {
   
       console.log("Payment success:", response.data);
       console.log("paid amount",response.data.amount)
-      alert("Payment successful!");
+      // const selectedInvoices = BillingInvoice.filter(invoice => 
+      //   selected.includes(invoice._id)
+      // );
+      
+      // selectedInvoices.forEach(invoice => {
+      //   console.log(`Invoice ${invoice.invoicenumber} paid amount: $${invoice.summary.total}`);
+      // });
+      // alert("Payment successful!");
+      // setOpenDialog(false);
+          // 2. Update each selected invoice
+    const updatePromises = selected.map(invoiceId => {
+      console.log("invoice id",invoiceId)
+      const invoice = BillingInvoice.find(inv => inv._id === invoiceId);
+      if (!invoice) return Promise.resolve();
+      
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      
+      // Calculate new paid amount (existing + current payment)
+      const newPaidAmount = (invoice.paidAmount || 0) + invoice.summary.total;
+      
+      const raw = JSON.stringify({
+        paidAmount: newPaidAmount,
+        invoiceStatus: "Paid",
+        active: "true"
+      });
+
+      const requestOptions = {
+        method: "PATCH",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+
+      const url = `${INVOICE_API}/workflow/invoices/invoice/${invoice._id}`;
+      return fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+          console.log(`Invoice ${invoice._id} updated:`, result);
+          return result;
+        });
+    });
+
+    // Wait for all invoice updates to complete
+    const results = await Promise.all(updatePromises);
+    
+    // Check if all updates were successful
+    const allSuccess = results.every(result => 
+      result && result.message === "Invoice Updated successfully"
+    );
+
+    if (allSuccess) {
+      toast.success("Payment successful and all invoices updated!");
+      
+      // Log each selected invoice's details
+      const selectedInvoices = BillingInvoice.filter(invoice => 
+        selected.includes(invoice._id)
+      );
+      
+      selectedInvoices.forEach(invoice => {
+        console.log(`Invoice ${invoice.invoicenumber} - Paid: $${invoice.summary.total}, Status: Paid`);
+      });
+      
       setOpenDialog(false);
+      
+      // Refresh invoice data if needed
+      // fetchInvoices();
+    } else {
+      toast.error("Payment succeeded but some invoices failed to update");
+    }
+
     } catch (error) {
       console.error("Payment error:", error.response?.data || error.message);
       alert("Payment failed!");
     }
   };
+  
+ 
+
   
   return (
     <Box>
@@ -875,7 +948,7 @@ const Invoices = () => {
                         cursor: "pointer",
                       }}
                     >
-                      ${}
+                     ${row.paidAmount || 0}
                     </TableCell>
                     <TableCell
                       style={{
