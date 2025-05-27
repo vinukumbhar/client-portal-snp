@@ -23,7 +23,7 @@ const NewOrganizer = () => {
       redirect: "follow"
     };
    
-    fetch(`${LOGIN_API }/admin/accountdetails/accountdetailslist/listbyuserid/${logindata.user.id}`, requestOptions)
+    fetch(`${LOGIN_API}/admin/accountdetails/accountdetailslist/listbyuserid/${logindata.user.id}`, requestOptions)
       .then((response) => response.json()
      
     )
@@ -49,6 +49,7 @@ const NewOrganizer = () => {
       const response = await fetch(url);
       const result = await response.json();
       setOrganizerTemplate(result.OrganizerTemplates);
+      console.log("temp",result.OrganizerTemplates)
     
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -63,7 +64,7 @@ const NewOrganizer = () => {
   };
   const OrganizerTemplateOptions = organizerTemplate.map((organizertemp) => ({
     value: organizertemp._id,
-    label: organizertemp.organizerName,
+    label: organizertemp.templatename,
   }));
   const handleOrganizerFormClose = () => {
     setTimeout(() => {}, 1000);

@@ -347,15 +347,15 @@ const IdwiseChat=()=>{
         .then((result) => {
            console.log("IdwiseChat",result)
           
-           setchatsubject(result.accountChats.chatsubject); 
-           console.log(result.accountChats.chatsubject);
+           setchatsubject(result.chat.chatsubject); 
+           console.log(result.chat.chatsubject);
 
-           setDescription(result.accountChats.description);
-           console.log(result.accountChats.description);
+           setDescription(result.chat.description);
+           console.log(result.chat.description);
 
 
-           setClientTasks(result.accountChats.clienttasks);
-           console.log(result.accountChats.clienttasks)
+           setClientTasks(result.chat.clienttasks);
+           console.log(result.chat.clienttasks)
 
 
           })
